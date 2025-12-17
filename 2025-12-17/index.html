@@ -45,12 +45,12 @@
 <body>
     
     <!-- Header -->
-    <header class="header ">
+    <header class="site-header ">
         <nav class="container">
-            <div class="header__inner">
+            <div class="site-header__inner">
                 <div>
-                    <a class="header__logo link-active" href="http://127.0.0.1:5500/aero-pulse.ru/">
-                        <img class="header__logo-image"
+                    <a class="site-header__logo link-active" href="http://127.0.0.1:5500/aero-pulse.ru/">
+                        <img class="site-header__logo-image"
                             src="img/newlogo.png" width="193"
                             height="40" alt="Altaihelicopters Logo"></a></div>
                 <div class="main-menu-wrapper">
@@ -70,7 +70,7 @@
                         <li class="main-menu__item"><a class="main-menu__link scroll" href="/o-nas">
                                 О нас
                             </a></li>
-                    </ul><button class="btn btn-alt" type="button" data-micromodal-trigger="modal">
+                    </ul><button class="btn btn-alt" type="button" data-micromodal-trigger="contact-popup">
                         Контакты
                     </button>
                 </div>
@@ -80,17 +80,17 @@
         </nav>
     </header><!-- Content -->
     <main>
-        <section class="hero">
+        <section class="banner-section">
             <div class="container">
-                <div class="hero__inner">
-                    <div class="hero__content">
+                <div class="banner-section__inner">
+                    <div class="banner-section__content">
                         <div>
-                            <h1 class="hero__title">
+                            <h1 class="banner-section__title">
                                 Экскурсии
                                 <br class="d-sm-none">
                                 на вертолёте
                             </h1>
-                            <p class="hero__desc">
+                            <p class="banner-section__desc">
                                 Мы предлагаем авторские авиатуры по Алтаю.
                                 <br class="d-none d-sm-inline">
                                 Отправляйтесь в путешествие с нами и наслаждайтесь
@@ -99,50 +99,50 @@
                             </p>
                         </div>
                         <div><button class="btn btn-white btn-large btn-w100" type="button"
-                                data-micromodal-trigger="modal">
+                                data-micromodal-trigger="contact-popup">
                                 Забронировать борт
                             </button></div>
                     </div>
-                    <div class="hero__video-box">
-                        <img class="hero__video" src="/aero-pulse.ru/img/firstscreenbackground.png" alt="Первый экран">
+                    <div class="banner-section__video-box">
+                        <img class="banner-section__video" src="/aero-pulse.ru/img/firstscreenbackground.png" alt="Первый экран">
                     </div>
                 </div>
             </div>
         </section>
-        <section class="section">
+        <section class="content-block">
             <div class="container">
                 <h2 class="visually-hidden">
                     Наши преимущества
                 </h2>
                 <ul class="row row-cols-md-2 row-cols-xl-3 gy-5 gx-md-5">
                     <li>
-                        <div class="plus plus-safety">
-                            <h3 class="plus__title">
+                        <div class="feature-box feature-box-safety">
+                            <h3 class="feature-box__title">
                                 Безопасность
                             </h3>
-                            <p class="plus__desc">
+                            <p class="feature-box__desc">
                                 Наши пилоты обладают большой опыт в авиации, а также имеют специальные допуски на
                                 осуществление полетов в горной местности.
                             </p>
                         </div>
                     </li>
                     <li>
-                        <div class="plus plus-mission">
-                            <h3 class="plus__title">
+                        <div class="feature-box feature-box-mission">
+                            <h3 class="feature-box__title">
                                 Гибкий подход
                             </h3>
-                            <p class="plus__desc">
+                            <p class="feature-box__desc">
                                 Наша цель - это организовать ваше путешествие таким образом, чтобы оно оставило приятные
                                 впечатления и запомнилось на всю жизнь.
                             </p>
                         </div>
                     </li>
                     <li>
-                        <div class="plus plus-dream">
-                            <h3 class="plus__title">
+                        <div class="feature-box feature-box-dream">
+                            <h3 class="feature-box__title">
                                 Исполняем мечты
                             </h3>
-                            <p class="plus__desc">
+                            <p class="feature-box__desc">
                                 Мы всегда готовы к воплощению ваших самых заветных желаний и с особым трепетом относимся
                                 к участию в знаковых для вас событиях.
                             </p>
@@ -151,23 +151,23 @@
                 </ul>
             </div>
         </section>
-        <section id="tours" class="section">
+        <section id="routes" class="content-block">
             <div class="container">
-                <h2 class="section__title">
+                <h2 class="content-block__title">
                     Выберите маршрут
                 </h2>
                 <ul class="row row-cols-md-2 row-cols-xl-3 g-4">
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 12 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/chemal-mini-preview.jpg" alt="Чемал Мини"
                                 loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Чемал Мини
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Насладитесь уникальным панорамным видом на востребованные туристические направления
                                     Чемальского района...
                                 </p><a class="btn btn-white btn-more" href="https://aero-pulse.ru/tours/chemal-mini">
@@ -177,16 +177,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 35 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/karakolskie-ozyora-preview.jpg"
                                 alt="Каракольские озера" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Каракольские озера
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Вертолет перенесет вас в место, где каждому удастся прикоснуться к ляденой глади
                                     Каракольских озер...
                                 </p><a class="btn btn-white btn-more"
@@ -197,16 +197,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа 30 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/chulyshman-preview.jpg" alt="Долина Чулышман"
                                 loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Долина Чулышман
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Экскурсия по долине реки Чулушман - это возможность отправиться на юг Телецкого
                                     озера, увидеть перевалы и водопады...
                                 </p><a class="btn btn-white btn-more" href="https://aero-pulse.ru/tours/chulyshman">
@@ -216,15 +216,15 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа
-                            </span><img class="tour__image" src="img/tours/beluha-preview.jpg"
+                            </span><img class="route-card__image" src="img/tours/beluha-preview.jpg"
                                 alt="Гора Белуха" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Гора Белуха
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Полет к подножию горы Белухи - самый притягательный маршрут для ценителей уединения
                                     с природой...
                                 </p><a class="btn btn-white btn-more" href="https://aero-pulse.ru/tours/beluha">
@@ -234,15 +234,15 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа
-                            </span><img class="tour__image" src="img/tours/aktash-preview.jpg"
+                            </span><img class="route-card__image" src="img/tours/aktash-preview.jpg"
                                 alt="Акташ" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Акташ
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     В туре вам удастся полюбоваться вершинами Северо-Чуйского хребта и увидеть слияние
                                     рек...
                                 </p><a class="btn btn-white btn-more" href="https://aero-pulse.ru/tours/aktash">
@@ -252,16 +252,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа 30 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/shavlinskie-ozyora-preview.jpg"
                                 alt="Шавлинские озера" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Шавлинские озера
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Незабываемые виды на русло горной реки Катунь, величие ледника Актру и древнейшие
                                     Шавлинские озера...
                                 </p><a class="btn btn-white btn-more"
@@ -272,16 +272,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа 30 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/shavlinskie-ozyora-preview.jpg"
                                 alt="Шавлинские озера" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Шавлинские озера
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Незабываемые виды на русло горной реки Катунь, величие ледника Актру и древнейшие
                                     Шавлинские озера...
                                 </p><a class="btn btn-white btn-more"
@@ -292,16 +292,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа 30 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/shavlinskie-ozyora-preview.jpg"
                                 alt="Шавлинские озера" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Шавлинские озера
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Незабываемые виды на русло горной реки Катунь, величие ледника Актру и древнейшие
                                     Шавлинские озера...
                                 </p><a class="btn btn-white btn-more"
@@ -312,16 +312,16 @@
                         </div>
                     </li>
                     <li>
-                        <div class="tour tour-hit"><span class="tour__time">
+                        <div class="route-card route-card-hit"><span class="route-card__time">
                                 3 часа 30 минут
-                            </span><img class="tour__image"
+                            </span><img class="route-card__image"
                                 src="img/tours/shavlinskie-ozyora-preview.jpg"
                                 alt="Шавлинские озера" loading="lazy">
-                            <div class="tour__content">
-                                <h3 class="tour__title">
+                            <div class="route-card__content">
+                                <h3 class="route-card__title">
                                     Шавлинские озера
                                 </h3>
-                                <p class="tour__desc">
+                                <p class="route-card__desc">
                                     Незабываемые виды на русло горной реки Катунь, величие ледника Актру и древнейшие
                                     Шавлинские озера...
                                 </p><a class="btn btn-white btn-more"
@@ -337,7 +337,7 @@
                     </a></div>
             </div>
         </section>
-        <section id="about-us" class="section">
+        <section id="team-info" class="content-block">
             <div class="container">
                 <div class="row row-cols-lg-2 gy-4 g-xl-5 align-items-lg-center">
                     <div>
@@ -349,7 +349,7 @@
                             </span></div>
                     </div>
                     <div>
-                        <h2 class="section__title-secondary">
+                        <h2 class="content-block__title-secondary">
                             Наша команда
                         </h2>
                         <div class="row row-cols-1 gy-4">
@@ -369,7 +369,7 @@
                 </div>
             </div>
         </section>
-        <section class="section">
+        <section class="content-block">
             <div class="container">
                 <div class="row row-cols-lg-2 gy-4 g-xl-5 align-items-lg-center">
                     
@@ -378,7 +378,7 @@
                             src="img/r44-red-md.png"
                             alt="Наш вертолет Robinson R44" loading="lazy"></div>
                             <div class="order-lg-1">
-                        <h2 class="section__title-secondary">
+                        <h2 class="content-block__title-secondary">
                             Наши вертолеты
                         </h2>
                         <p class="text-lead">
@@ -420,7 +420,7 @@
                 </div>
             </div>
         </section>
-        <section class="section gift-box-wrapper">
+        <section class="content-block gift-box-wrapper">
             <div class="gift-box overflow-hidden">
                 <div class="container">
                     <div class="gift-box__inner">
@@ -428,7 +428,7 @@
                             <div class="col-10 col-sm-9 col-md-6 col-xl-7 col-xxl-6 ms-auto">
                                 <div class="gift-box__content">
                                     <div>
-                                        <h2 class="section__title-secondary">
+                                        <h2 class="content-block__title-secondary">
                                             Подарочный
                                             <br>
                                             сертификат
@@ -440,7 +440,7 @@
                                         </p>
                                     </div>
                                     <div><button class="btn btn-large btn-light" type="button"
-                                            data-micromodal-trigger="modal">
+                                            data-micromodal-trigger="contact-popup">
                                             Заказать сертификат
                                         </button></div>
                                 </div>
@@ -450,31 +450,31 @@
                 </div>
             </div>
         </section>
-        <section id="reviews" class="section overflow-hidden">
+        <section id="testimonials" class="content-block overflow-hidden">
             <div class="container">
-                <h2 class="section__title">
+                <h2 class="content-block__title">
                     Отзывы
                 </h2>
                 <div class="owl-carousel-container">
                     <div class="owl-carousel comments-carousel">
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Супер-полет!!! Летали с высадкой в горах — немного замерзли, не рассчитали,
                                             что температура будет на 10 градусов ниже, чем в Чемале)) Впрочем, это
                                             нисколько не ухудшило впечатление от полета, а только добавило эмоций)) Вид
                                             сверху на Горный Алтай впечатляет!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Марьяна Тицкая
-                                            </span><time class="comment__date" datetime="2025-07-06">
+                                            </span><time class="review-card__date" datetime="2025-07-06">
                                                 06 июля 2025
                                             </time></div>
                                     </div>
@@ -482,23 +482,23 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Это было ооочень круто! Слетали на Каракольские озера. Незабываемые виды и
                                             впечатления. Приземлились на стоянку прямо на горе, с которой открывается
                                             потрясающий вид на озера внизу. Пилот настоящий профессионал. Спасибо
                                             большое за яркие эмоции!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Екатерина Затеева" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Катя Затеева
-                                            </span><time class="comment__date" datetime="2025-06-12">
+                                            </span><time class="review-card__date" datetime="2025-06-12">
                                                 12 июня 2025
                                             </time></div>
                                     </div>
@@ -506,23 +506,23 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Полет на вертолете это что-то невероятное! Очень классные эмоции. Пилоту
                                             огромный респект за воздушную экскурсию, он реально крутой профессионал и
                                             хороший человек. Красный вертолет останется навсегда в сердце и на фотках с
                                             отдыха) В следующий раз покоряем Белуху!)
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Александра Максимова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Юлия Максимова
-                                            </span><time class="comment__date" datetime="2025-08-08">
+                                            </span><time class="review-card__date" datetime="2025-08-08">
                                                 08 августа 2025
                                             </time></div>
                                     </div>
@@ -530,23 +530,23 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Аэропульс в рекламе не нуждается, поэтому просту хочу сказать огромнейшее
                                             спасибо за незабываемые впечатления, чувство безопасности во время полета и
                                             за возможность наслаждаться красивейшими пейзажами Горного Алтая. Мы
                                             обязательно еще вернемся!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Давид Мирошниченко" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Давид Бойко
-                                            </span><time class="comment__date" datetime="2025-05-29">
+                                            </span><time class="review-card__date" datetime="2025-05-29">
                                                 29 мая 2025
                                             </time></div>
                                     </div>
@@ -554,23 +554,23 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Нам все очень понравилось, уже начинаем планировать полеты по другим
                                             маршрутам))) Невозможно передать словами какие волнующие впечатления и
                                             незабываемые ощущения мы испытали. Пилоту Алексею большущее спасибо за такой
                                             полет. Однозначно рекомендуем!!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Ирина Гридина" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Ирина Гридина
-                                            </span><time class="comment__date" datetime="2025-05-10">
+                                            </span><time class="review-card__date" datetime="2025-05-10">
                                                 10 мая 2025
                                             </time></div>
                                     </div>
@@ -578,22 +578,22 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Мы специально приехали на золотую осень по рекомендации друзей и угадали.
                                             Больше всего запомнилось слияние Чуи и Катуни, такие оттенки воды, что
                                             закачаешься. На аэродроме только подмерзли сильно, берите с собой ветровки.
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Саша Петрова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Саша Петрова
-                                            </span><time class="comment__date" datetime="2025-09-20">
+                                            </span><time class="review-card__date" datetime="2025-09-20">
                                                 20 сентября 2025
                                             </time></div>
                                     </div>
@@ -601,22 +601,22 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Брал на экскурсию дочку 6 лет. Ей, конечно, не так понравились сами горы,
                                             как факт полета на вертолете. А вот мы с женой были в экстазе от экскурсии,
                                             еще и с погодой очень повезло, так как неделю до этого полёта лили дожди.
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Лена Громова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Кирилл Кудрявцев
-                                            </span><time class="comment__date" datetime="2025-08-30">
+                                            </span><time class="review-card__date" datetime="2025-08-30">
                                                 30 августа 2025
                                             </time></div>
                                     </div>
@@ -624,22 +624,22 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Хотела порадовать сестру на 18 лет и подарила ей сертификат на полет над
                                             Чемалом. Восторгу не было предела, теперь хвастается фото и благодарит меня
                                             за эмоции. Удачно сложилось, что у неё ДР аккурат в мае.
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Марина Кутузова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Марина Кутузова
-                                            </span><time class="comment__date" datetime="2025-07-04">
+                                            </span><time class="review-card__date" datetime="2025-07-04">
                                                 04 июля 2025
                                             </time></div>
                                     </div>
@@ -647,22 +647,22 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Наш первый опыт полета на вертолете, поэтому в начале думали, что это очень
                                             страшно. Огромное спасибо пилоту Алексею, что поддержал на аэродроме.
                                             Захватывает от красоты, когда ты поднимаешься над Катунью!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Даша Соколова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Даша Соколова
-                                            </span><time class="comment__date" datetime="2025-06-10">
+                                            </span><time class="review-card__date" datetime="2025-06-10">
                                                 10 июня 2025
                                             </time></div>
                                     </div>
@@ -670,22 +670,22 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="comment-wrapper">
-                                <div class="comment">
+                            <div class="review-wrapper">
+                                <div class="review-card">
                                     <div>
-                                        <p class="comment__text">
+                                        <p class="review-card__text">
                                             Супер!!! Я уже много раз видела Северо-Чуйский хребет, но когда ты на одной
                                             высоте с этими великанами, картинка воспринимается совсем по-другому. Даже
                                             не верится, что горы впереди настоящие!
                                         </p>
                                     </div>
-                                    <div class="comment__box">
-                                        <div><img class="comment__photo"
+                                    <div class="review-card__box">
+                                        <div><img class="review-card__photo"
                                                 src="img/no-avatar.png"
                                                 alt="Маша Иванова" loading="lazy"></div>
-                                        <div><span class="comment__name">
+                                        <div><span class="review-card__name">
                                                 Маша Иванова
-                                            </span><time class="comment__date" datetime="2025-05-25">
+                                            </span><time class="review-card__date" datetime="2025-05-25">
                                                 25 мая 2025
                                             </time></div>
                                     </div>
@@ -696,20 +696,20 @@
                 </div>
             </div>
         </section>
-        <section id="faq" class="section">
+        <section id="questions" class="content-block">
   <div class="container">
-    <h2 class="section__title">
+    <h2 class="content-block__title">
       Ответы на вопросы
     </h2>
     <div class="row gx-xl-5 gy-5 gy-lg-0">
       <div class="col-12">
-        <ul class="accordion">
-          <li class="accordion__item accordion__item_show">
-            <h3 class="accordion__header">
+        <ul class="expandable-list">
+          <li class="expandable-list__item expandable-list__item_show">
+            <h3 class="expandable-list__header">
               Откуда вылет?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Взлет осуществляется с нашей вертолетной площадки Aeropulse в селе Чемал
                 (ориентир - парковка Чемальской ГЭС). Мы можем организовать подачу вертолета к
                 отелю. Стоимость такой услуги рассчитывается индивидуально по запросу.
@@ -717,12 +717,12 @@
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Нужно ли специально одеваться?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 В вертолете всегда поддерживается комфортная температура, поэтому одеваться
                 можно в соответствии с погодой. Однако мы рекомендуем защититься от ветра, так
                 как многие из маршрутов предполагают прогулку на высоте с более низкой
@@ -731,12 +731,12 @@
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Что будет, если не повезёт с погодой?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Мы предложим варианты по переносу экскурсии на ближайшее время. В случае полной
                 отмены полета из-за погодных условий предоплата по брони возвращается в размере
                 100% (исключение - полёты по подарочным сертификатам).
@@ -744,12 +744,12 @@
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Как получить подарочный сертификат?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Подарочные сертификаты мы отправляем на электронную почту. При желании, вы
                 можете распечатать файл в ближайшем фотосалоне. Сертификаты приобретаются на
                 любую сумму, после чего им присваивается индивидуальный номер. По запросу мы
@@ -758,12 +758,12 @@
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Можно ли с собой взять еду и напитки?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Еда и напитки на борту разрешены. Также обращаем ваше внимание на то, что
                 путешествия проходят в отдаленные районы без туристической инфраструктуры,
                 поэтому рекомендуем брать с собой на прогулку небольшую бутылку воды.
@@ -771,60 +771,60 @@
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Спиртные напитки и курение?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 На борту запрещено находиться в состоянии сильного алкогольного опьянения и
                 курить (в том числе любые виды электронных устройств).
               </p>
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Как быть с животными?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 К сожалению, питомцам придется подождать хозяев на земле, на борт мы их взять не
                 можем.
               </p>
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Могут ли лететь дети?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 На программы полета до 30 минут на борт вертолета могут подняться дети любого
                 возраста. На длительные прогулки мы рекомендуем брать детей от 5 лет.
               </p>
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Что делать при перевесе пассажиров?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Общий вес пассажиров не должен превышать 200 кг. Если перегруз случается, то
                 стоимость полета рассчитывается индивидуально.
               </p>
             </div>
           </li>
 
-          <li class="accordion__item">
-            <h3 class="accordion__header">
+          <li class="expandable-list__item">
+            <h3 class="expandable-list__header">
               Мы не нашли нужный маршрут?
             </h3>
-            <div class="accordion__body">
-              <p class="accordion__content">
+            <div class="expandable-list__body">
+              <p class="expandable-list__content">
                 Мы можем адаптировать любой маршрут под ваши предпочтения или предложить
                 уникальную программу полета. Стоимость экскурсии в таком случае рассчитывается
                 индивидуально.
@@ -837,7 +837,7 @@
   </div>
 </section>
         
-<section class="section">
+<section class="content-block">
   <div class="container">
     <div class="row align-items-center justify-content-between gy-4">
       
@@ -867,7 +867,7 @@
             </p>
           </div>
           <div>
-            <button class="btn btn-medium" type="button" data-micromodal-trigger="modal">
+            <button class="btn btn-medium" type="button" data-micromodal-trigger="contact-popup">
               Задать вопрос
             </button>
           </div>
@@ -877,15 +877,15 @@
     </div>
   </div>
 </section>
-    </main><!-- Footer -->
-    <footer class="footer">
-        <div class="footer__inner">
+    </main>    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer__inner">
             <div class="container">
-                <div class="footer__box">
+                <div class="site-footer__box">
                     <div>
                         <div class="row justify-content-lg-between align-items-lg-end gy-lg-0 gy-3">
                             <div class="col col-sm-9 col-lg-6">
-                                <div class="footer__logo"><img class="footer__logo-image"
+                                <div class="site-footer__logo"><img class="site-footer__logo-image"
                                         src="img/newlogo.png"
                                         width="193" height="40" alt="Aeropulse Logo Secondary"></div>
                                 <p>
@@ -894,7 +894,7 @@
                                 </p>                            
                             </div>
                             <div class="col-lg-auto">
-                                <a class="footer__link " href="/cookie">
+                                <a class="site-footer__link " href="/cookie">
                                     Политика обработки файлов cookie
                                 </a></div>
                         </div>
@@ -916,7 +916,7 @@
     </div>
   </div>
 </div>
-                            <div class="col-auto"><span class="footer__copyright">
+                            <div class="col-auto"><span class="site-footer__copyright">
                                     &copy; 2025 Altaihelicopters.com ООО "Алтай Хеликоптерс" ИНН 0500038196
                                     <br>
                                     Предложения на сайте не являются публичной офертой
@@ -946,26 +946,26 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal micromodal-slide" id="modal" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container">
-                <div class="modal__header">
-                    <h5 class="modal__title">
+    <div class="popup-window micromodal-slide" id="contact-popup" aria-hidden="true">
+        <div class="popup-window__overlay" tabindex="-1" data-micromodal-close>
+            <div class="popup-window__container">
+                <div class="popup-window__header">
+                    <h5 class="popup-window__title">
                         Напишите нам в
                         <br>
                         Telegram или на почту
                     </h5>
                 </div>
-                <div class="modal__content"><a class="modal__contact modal-icon-phone" href="https://t.me/altaihelicopters_bot"
-                        target="_blank" rel="noopener nofollow noreferrer"><span class="modal__phone">
+                <div class="popup-window__content"><a class="popup-window__contact modal-icon-phone" href="https://t.me/altaihelicopters_bot"
+                        target="_blank" rel="noopener nofollow noreferrer"><span class="popup-window__phone">
                             Telegram
-                        </span><span class="modal__desc">
+                        </span><span class="popup-window__desc">
                             @altaihelicopters
                         </span></a>
-                        <a class="modal__contact modal-icon-wa" href="mailto:ask@altaihelicopters.com"
-                        target="_blank" rel="noopener nofollow noreferrer"><span class="modal__phone">
+                        <a class="popup-window__contact modal-icon-wa" href="mailto:ask@altaihelicopters.com"
+                        target="_blank" rel="noopener nofollow noreferrer"><span class="popup-window__phone">
                             Email
-                        </span><span class="modal__desc">
+                        </span><span class="popup-window__desc">
                             ask@altaihelicopters.com
                         </span></a>
                     </div>
@@ -985,7 +985,7 @@
     <script>
 document.addEventListener("DOMContentLoaded", function () {
   // Находим список всех туров
-  const list = document.querySelector("#tours ul");
+  const list = document.querySelector("#routes ul");
   if (!list) return;
 
   const cards = Array.from(list.children);
@@ -1012,11 +1012,11 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- Раскрытие ответов -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const items = document.querySelectorAll('.accordion__item');
+  const items = document.querySelectorAll('.expandable-list__item');
 
   items.forEach(item => {
-    const header = item.querySelector('.accordion__header');
-    const body = item.querySelector('.accordion__body');
+    const header = item.querySelector('.expandable-list__header');
+    const body = item.querySelector('.expandable-list__body');
 
     if (!header || !body) return;
 
@@ -1024,15 +1024,15 @@ document.addEventListener('DOMContentLoaded', function() {
     body.style.maxHeight = null;
 
     header.addEventListener('click', () => {
-      const isOpen = item.classList.contains('accordion__item_show');
+      const isOpen = item.classList.contains('expandable-list__item_show');
 
       // Если открыт — закрываем
       if (isOpen) {
-        item.classList.remove('accordion__item_show', 'accordion__item_slidedown');
+        item.classList.remove('expandable-list__item_show', 'expandable-list__item_slidedown');
         body.style.maxHeight = null;
       } else {
         // Если закрыт — открываем, не трогая другие
-        item.classList.add('accordion__item_show', 'accordion__item_slidedown');
+        item.classList.add('expandable-list__item_show', 'expandable-list__item_slidedown');
         body.style.maxHeight = body.scrollHeight + 'px';
       }
     });
