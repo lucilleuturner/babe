@@ -25,10 +25,59 @@ COMPETITORS = [
 
 
 def normalize_brand(brand: str) -> str:
-    """Нормализует бренд: приводит к нижнему регистру и убирает лишние пробелы."""
+    """
+    Нормализует бренд: приводит к формату с заглавной буквы (Роснефть, Nord).
+    Убирает лишние пробелы.
+    """
     if pd.isna(brand) or brand == '':
         return ''
-    return str(brand).strip().lower()
+    brand_str = str(brand).strip()
+    if len(brand_str) == 0:
+        return ''
+    
+    # Приводим к формату: первая буква заглавная, остальные строчные
+    # Но сохраняем специальные случаи (например, Nord, G-Box, Роснефть)
+    # Если все буквы заглавные или строчные, применяем title case
+    if brand_str.isupper() or brand_str.islower():
+        # Используем title() для каждого слова отдельно
+        words = brand_str.split()
+        normalized_words = [word.title() for word in words]
+        return ' '.join(normalized_words)
+    
+    # Если уже есть смешанный регистр, оставляем как есть
+    return brand_str
+
+
+def extract_brand_from_name(name: str) -> str:
+    """
+    Извлекает бренд из названия товара.
+    Ищет известные бренды в начале названия.
+    """
+    if pd.isna(name) or name == '':
+        return ''
+    
+    name_str = str(name).strip()
+    # Убираем слово "Масло" в начале
+    name_str = re.sub(r'^масло\s+', '', name_str, flags=re.IGNORECASE)
+    
+    # Берем первое слово или несколько слов (обычно это бренд)
+    words = name_str.split()
+    if words:
+        # Бренд может состоять из одного или нескольких слов
+        # Обычно это первое слово, но может быть и два (например, "Газпромнефть")
+        # Останавливаемся на технических характеристиках или служебных словах
+        brand_words = []
+        for word in words[:3]:  # Максимум 3 слова для бренда
+            if re.match(r'^\d+[Ww]?[-/]?\d+', word):  # Вязкость
+                break
+            if re.match(r'^\d+[лЛlL]', word):  # Объем
+                break
+            if word.lower() in ['для', 'масло', 'gl-']:
+                break
+            brand_words.append(word)
+        return ' '.join(brand_words).strip()
+    
+    return ''
 
 
 def extract_line_from_name(name: str, brand: str) -> str:
@@ -76,7 +125,37 @@ def extract_line_from_name(name: str, brand: str) -> str:
             result = ' '.join(line_words).strip()
             # Убираем лишние пробелы и знаки препинания в конце
             result = re.sub(r'\s*[,\-]\s*$', '', result)
-            return result
+            if result:
+                return result
+    
+    # Если бренда нет в столбце, пытаемся найти его в названии
+    # и затем извлечь линейку после него
+    extracted_brand = extract_brand_from_name(name_str)
+    if extracted_brand:
+        # Ищем извлеченный бренд в названии и берем следующее слово
+        pattern = re.compile(re.escape(extracted_brand), re.IGNORECASE)
+        match = pattern.search(name_str)
+        if match:
+            after_brand = name_str[match.end():].strip()
+            after_brand = re.sub(r'^масло\s+', '', after_brand, flags=re.IGNORECASE)
+            words = after_brand.split()
+            line_words = []
+            for word in words:
+                if re.match(r'^\d+[Ww]?[-/]?\d+', word):
+                    break
+                if re.match(r'^\d+[лЛlL]', word):
+                    break
+                if word == '(':
+                    break
+                if word.lower() in ['л', 'l', 'канистра', 'бочка', 'флакон']:
+                    break
+                if word.lower() in ['для', 'масло']:
+                    continue
+                line_words.append(word)
+            result = ' '.join(line_words).strip()
+            result = re.sub(r'\s*[,\-]\s*$', '', result)
+            if result:
+                return result
     
     # Если бренда нет или не нашли, пытаемся извлечь первые слова до технических характеристик
     # Убираем слово "масло" в начале
@@ -100,15 +179,19 @@ def extract_line_from_name(name: str, brand: str) -> str:
 
 
 def normalize_volume(volume: str) -> str:
-    """Нормализует объем тары для сравнения."""
+    """
+    Нормализует объем тары для сравнения.
+    Учитывает варианты: 200л, 200 л, 200Л - все считаются одинаковыми.
+    """
     if pd.isna(volume) or volume == '':
         return ''
     
     volume_str = str(volume).strip()
-    # Извлекаем число и единицу измерения
+    # Извлекаем число и единицу измерения (игнорируя пробелы)
     match = re.search(r'(\d+(?:[.,]\d+)?)\s*[лЛlL]', volume_str, re.IGNORECASE)
     if match:
         num = match.group(1).replace(',', '.')
+        # Нормализуем к формату "число л" (с пробелом)
         return f"{num} л"
     
     # Если не нашли стандартный формат, возвращаем как есть
@@ -182,7 +265,29 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
     
     # Создаем нормализованные колонки для группировки
     product_rows = product_rows.copy()
-    product_rows['_brand_norm'] = product_rows['Бренд'].apply(normalize_brand)
+    
+    # Определяем бренд: сначала из столбца, если нет - из названия товара
+    def get_brand(row):
+        brand_col = row.get('Бренд', '')
+        if pd.notna(brand_col) and str(brand_col).strip():
+            return normalize_brand(str(brand_col))
+        # Если бренда нет в столбце, извлекаем из названия
+        name = row.get('Название товара', '')
+        extracted_brand = extract_brand_from_name(name)
+        return normalize_brand(extracted_brand) if extracted_brand else ''
+    
+    product_rows['_brand_norm'] = product_rows.apply(get_brand, axis=1)
+    # Для сравнения создаем версию в нижнем регистре
+    product_rows['_brand_norm_lower'] = product_rows['_brand_norm'].str.lower()
+    
+    # Записываем извлеченные бренды в столбец "Бренд", если они были извлечены из названия
+    if 'Бренд' in product_rows.columns:
+        for idx in product_rows.index:
+            brand_col = product_rows.loc[idx, 'Бренд']
+            if pd.isna(brand_col) or not str(brand_col).strip():
+                extracted_brand = product_rows.loc[idx, '_brand_norm']
+                if extracted_brand:
+                    product_rows.loc[idx, 'Бренд'] = extracted_brand
     
     # Извлекаем линейку: если есть в колонке "Линейка", используем её, иначе извлекаем из названия
     def get_line(row):
@@ -192,10 +297,26 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
                 return str(line_col).strip()
         # Если линейки нет в колонке, извлекаем из названия
         name = row.get('Название товара', '')
-        brand = row.get('Бренд', '')
-        return extract_line_from_name(name, brand)
+        brand_col = row.get('Бренд', '')
+        # Если бренда нет в столбце, используем извлеченный бренд
+        if pd.isna(brand_col) or not str(brand_col).strip():
+            extracted_brand = extract_brand_from_name(name)
+            brand_col = extracted_brand if extracted_brand else ''
+        return extract_line_from_name(name, brand_col)
     
     product_rows['_line'] = product_rows.apply(get_line, axis=1)
+    
+    # Записываем найденную линейку в столбец "Линейка", если она была извлечена
+    if 'Линейка' in product_rows.columns:
+        for idx in product_rows.index:
+            if pd.isna(product_rows.loc[idx, 'Линейка']) or not str(product_rows.loc[idx, 'Линейка']).strip():
+                extracted_line = product_rows.loc[idx, '_line']
+                if extracted_line:
+                    product_rows.loc[idx, 'Линейка'] = extracted_line
+    else:
+        # Если колонки нет, создаем её
+        product_rows['Линейка'] = product_rows['_line']
+    
     product_rows['_volume_norm'] = product_rows['Объем тары'].apply(normalize_volume)
     
     # Группируем товары
@@ -208,7 +329,7 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
         
         # Находим группу похожих товаров
         group = [idx]
-        brand_norm = row['_brand_norm']
+        brand_norm_lower = row['_brand_norm_lower']
         line = row['_line']
         volume_norm = row['_volume_norm']
         
@@ -217,15 +338,16 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
             if idx2 == idx or idx2 in processed_indices:
                 continue
             
-            brand_norm2 = row2['_brand_norm']
+            brand_norm_lower2 = row2['_brand_norm_lower']
             line2 = row2['_line']
             volume_norm2 = row2['_volume_norm']
             
-            # Сравниваем бренды
-            if brand_norm != brand_norm2:
+            # Сравниваем бренды (по нижнему регистру для игнорирования регистра)
+            if brand_norm_lower != brand_norm_lower2:
                 continue
             
-            # Сравниваем объемы (точное совпадение)
+            # Сравниваем объемы (нормализованные значения)
+            # normalize_volume уже нормализует формат, поэтому сравниваем нормализованные значения
             if volume_norm != volume_norm2:
                 continue
             
@@ -251,7 +373,7 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
         best_row = group_rows.loc[group_rows['_price_num'].idxmin()]
         
         # Удаляем служебные колонки
-        best_row = best_row.drop(['_brand_norm', '_line', '_volume_norm', '_price_num'])
+        best_row = best_row.drop(['_brand_norm', '_brand_norm_lower', '_line', '_volume_norm', '_price_num'])
         grouped_products.append(best_row)
         
         # Отмечаем все товары группы как обработанные
@@ -276,19 +398,48 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     """Основная функция для обработки файла."""
     import sys
+    import os
+    from pathlib import Path
     
     # Определяем входной и выходной файлы
     if len(sys.argv) > 1:
         input_file = sys.argv[1]
     else:
-        input_file = input("Введите путь к входному файлу (CSV или Excel): ").strip()
+        # Ищем файл на рабочем столе
+        desktop_paths = [
+            Path.home() / 'Desktop',
+            Path.home() / 'Рабочий стол',
+            Path.home() / 'Desktop' / 'Все масла конкурентов для fuzzy.xlsx',
+            Path.home() / 'Рабочий стол' / 'Все масла конкурентов для fuzzy.xlsx',
+        ]
+        
+        input_file = None
+        for path in desktop_paths:
+            if path.is_file():
+                input_file = str(path)
+                break
+            elif path.is_dir():
+                file_path = path / 'Все масла конкурентов для fuzzy.xlsx'
+                if file_path.exists():
+                    input_file = str(file_path)
+                    break
+        
+        if not input_file:
+            input_file = input("Введите путь к входному файлу (CSV или Excel): ").strip()
+            if not input_file:
+                # Пробуем найти файл в текущей директории
+                if os.path.exists('Все масла конкурентов для fuzzy.xlsx'):
+                    input_file = 'Все масла конкурентов для fuzzy.xlsx'
+                else:
+                    print("Файл не найден!")
+                    return
     
     if len(sys.argv) > 2:
         output_file = sys.argv[2]
     else:
-        output_file = input("Введите путь к выходному файлу (по умолчанию: output.xlsx): ").strip()
-        if not output_file:
-            output_file = 'output.xlsx'
+        # Сохраняем результат в новый файл рядом с исходным
+        input_path = Path(input_file)
+        output_file = str(input_path.parent / f"{input_path.stem}_обработано.xlsx")
     
     # Читаем файл
     print(f"Чтение файла: {input_file}")
