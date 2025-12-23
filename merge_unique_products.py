@@ -178,6 +178,31 @@ def extract_line_from_name(name: str, brand: str) -> str:
     return result
 
 
+def extract_volume_from_name(name: str) -> str:
+    """
+    Извлекает объем тары из названия товара.
+    Ищет паттерны типа: 20 л, 20л, (20 л), 20л, и т.д.
+    """
+    if pd.isna(name) or name == '':
+        return ''
+    
+    name_str = str(name).strip()
+    
+    # Ищем объем в скобках: (20 л, канистра) или (20л)
+    match = re.search(r'\([^)]*?(\d+(?:[.,]\d+)?)\s*[лЛlL]', name_str, re.IGNORECASE)
+    if match:
+        num = match.group(1).replace(',', '.')
+        return f"{num} л"
+    
+    # Ищем объем без скобок: 20 л или 20л
+    match = re.search(r'(\d+(?:[.,]\d+)?)\s*[лЛlL]', name_str, re.IGNORECASE)
+    if match:
+        num = match.group(1).replace(',', '.')
+        return f"{num} л"
+    
+    return ''
+
+
 def normalize_volume(volume: str) -> str:
     """
     Нормализует объем тары для сравнения.
@@ -317,7 +342,28 @@ def group_products(df: pd.DataFrame) -> pd.DataFrame:
         # Если колонки нет, создаем её
         product_rows['Линейка'] = product_rows['_line']
     
-    product_rows['_volume_norm'] = product_rows['Объем тары'].apply(normalize_volume)
+    # Извлекаем объем: сначала из столбца, если нет - из названия товара
+    def get_volume(row):
+        volume_col = row.get('Объем тары', '')
+        if pd.notna(volume_col) and str(volume_col).strip():
+            normalized = normalize_volume(str(volume_col))
+            if normalized:
+                return normalized
+        # Если объема нет в столбце, извлекаем из названия
+        name = row.get('Название товара', '')
+        extracted_volume = extract_volume_from_name(name)
+        return normalize_volume(extracted_volume) if extracted_volume else ''
+    
+    product_rows['_volume_norm'] = product_rows.apply(get_volume, axis=1)
+    
+    # Записываем извлеченные объемы в столбец "Объем тары", если они были извлечены из названия
+    if 'Объем тары' in product_rows.columns:
+        for idx in product_rows.index:
+            volume_col = product_rows.loc[idx, 'Объем тары']
+            if pd.isna(volume_col) or not str(volume_col).strip():
+                extracted_volume = product_rows.loc[idx, '_volume_norm']
+                if extracted_volume:
+                    product_rows.loc[idx, 'Объем тары'] = extracted_volume
     
     # Группируем товары
     grouped_products = []
