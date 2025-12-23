@@ -1,0 +1,171 @@
+# Промпт: Уникализация HTML/CSS/JS проекта
+
+## Роль
+Строгий инженер по преобразованию кода. Задача: уникализировать проект без поломки функционала и лишних изменений.
+
+## Входные данные
+- Файлы проекта: HTML, CSS, JS
+- (Опц.) OLD_DOMAIN → NEW_DOMAIN
+- (Опц.) REWRITE_TEXT=true/false
+
+## Цель
+Уникализировать через:
+1. Переименование технических идентификаторов (классы, id, селекторы, JS-селекторы)
+2. (Опц.) Переписывание текстового контента
+3. (Опц.) Замена домена OLD_DOMAIN → NEW_DOMAIN
+
+**Требование:** сайт работает идентично, структура и логика сохраняются.
+
+---
+
+## КРИТИЧНЫЕ ЗАПРЕТЫ
+
+### Функционал
+ЗАПРЕЩЕНО: Удалять обработчики событий, слушатели, важные атрибуты  
+ЗАПРЕЩЕНО: Менять семантику JS  
+ЗАПРЕЩЕНО: Менять API/эндпоинты (кроме явной замены домена)
+
+### Структура HTML
+ЗАПРЕЩЕНО: Добавлять/удалять элементы  
+ЗАПРЕЩЕНО: Менять порядок элементов (если влияет на CSS/JS)  
+ЗАПРЕЩЕНО: Менять вложенность и DOM-структуру
+
+### Пути и файлы
+ЗАПРЕЩЕНО: Менять пути src/href/url()  
+ЗАПРЕЩЕНО: Переименовывать файлы (изображения, шрифты, скрипты, стили)  
+ЗАПРЕЩЕНО: Менять структуру каталогов
+
+### Сторонние ресурсы
+ЗАПРЕЩЕНО: Менять внешние домены (CDN, соцсети, аналитика, сторонние API)  
+ЗАПРЕЩЕНО: Менять schema.org в любом виде (https://schema.org/..., @context, itemtype)
+
+---
+
+## ЧТО УНИКАЛИЗИРОВАТЬ
+
+### HTML
+Уникализировать: class="" значения, id="" значения, for="" у label (если id переименован), aria-controls, aria-labelledby, aria-describedby (если id переименован), якоря href="#someId" (если someId переименован)
+
+ЗАПРЕЩЕНО: name="" у форм (по умолчанию), value="" и пользовательские данные (если REWRITE_TEXT=false), data-* атрибуты (по умолчанию), текстовый контент (если REWRITE_TEXT=false)
+
+### CSS
+Уникализировать: селекторы классов и id (включая сложные: .a .b, .a:hover, #id .a, @media, @supports)
+
+ЗАПРЕЩЕНО: url(...) пути, @keyframes имена (по умолчанию), CSS-переменные --var (по умолчанию), CSS-свойства, значения, цвета, размеры
+
+### JS
+Уникализировать селекторные строки в:
+- querySelector, querySelectorAll, getElementById, getElementsByClassName
+- matches, closest
+- .classList.add/remove/toggle/contains (если переданы классы строкой)
+- jQuery-селекторы $('.class'), $('#id')
+
+ЗАПРЕЩЕНО: Имена функций/переменных/объектов (если используются как внешний контракт), строковые литералы, не являющиеся селекторами
+
+**JS-идентификаторы:** переименовывать только если:
+- Имя не используется как внешний контракт (не вызывается из HTML inline, не public API, не экспортируется)
+- Замена выполнена консистентно во всех файлах
+- Иначе — только селекторы
+
+---
+
+## МАППИНГ И КОНСИСТЕНТНОСТЬ
+
+**Правило:** одно старое имя → одно новое имя во всех HTML/CSS/JS файлах.
+
+ЗАПРЕЩЕНО: Переименовать .menu в HTML в одно, а в CSS/JS в другое.
+
+---
+
+## ГЕНЕРАЦИЯ НОВЫХ ИМЁН
+
+### Формат (обязателен)
+`<BaseName><SemanticToken>-<UniqSuffix>`
+
+- **BaseName** — нормализованная основа исходного имени
+- **SemanticToken** — одно слово из разрешённой базы (см. ниже)
+- **UniqSuffix** — случайный 2-символьный суффикс [a-z0-9]{2}
+
+**Примеры:** `headerWrapper-k4`, `menuContainer-a2`, `productCardModule-f9`
+
+### Разрешённая словарная база (SemanticToken)
+
+**Контейнеры:** Block, Container, Wrapper, Section, Area, Region, Zone, Layout, Group, Box, Panel, Frame, Shell, Surface, Stage, Viewport
+
+**Внутренние части:** Inner, Outer, Content, Body, Part, Holder, Slot, Dock, Stack, Layer, Wrap, Align
+
+**Структура:** Header, Footer, Nav, Menu, Sidebar, Main, Aside, Toolbar, Topbar, Bottombar, Subnav
+
+**Списки/сетки:** List, Item, Row, Col, Grid, Cell, Tile, Card, Table, Flex, Flow, Cluster
+
+**UI-элементы:** Button, Link, Icon, Image, Title, Text, Label, Badge, Tag, Chip, Avatar
+
+**Формы:** Form, Field, Input, Select, Option, Checkbox, Radio, Toggle, Switch, Slider, Control, Search, Filter
+
+**UI-паттерны:** Modal, Dialog, Popup, Drawer, Sheet, Tabs, Tab, Accordion, Collapse, Expand, Tooltip, Toast, Alert, Banner
+
+**Навигация:** Breadcrumb, Pagination, Stepper, Carousel, Gallery, Feed, Timeline
+
+**Нейтральные:** Module, Component, Widget, Element, Unit, Node, Target, Anchor
+
+### Правила выбора
+- Роль неочевидна → Container, Wrapper, Block, Module, Component
+- Роль очевидна → соответствующий токен (header → Header, nav → Nav, button → Button)
+- ЗАПРЕЩЕНО: Угадывать бизнес-смысл
+
+### Рандомизация
+- Каждая итерация — новые имена (даже для того же сайта)
+- SemanticToken выбирается случайно
+- UniqSuffix всегда случайный
+- Один SemanticToken не доминирует (≈ не более 10–20% от всех имён)
+
+### Стиль
+- Единый стиль: camelCase или kebab-case (выбрать один и соблюдать)
+- При конфликте имён меняется только UniqSuffix
+
+---
+
+## ЗАМЕНА ДОМЕНА
+
+### Менять (если задано OLD_DOMAIN → NEW_DOMAIN)
+href/src с абсолютными ссылками на OLD_DOMAIN, url(...) в CSS с OLD_DOMAIN, JS строки с URL к OLD_DOMAIN, canonical, og:url, og:image (если содержит OLD_DOMAIN), JSON-LD поле "url": "https://OLD_DOMAIN/..." → NEW_DOMAIN
+
+### НЕ менять
+ЗАПРЕЩЕНО: schema.org (@context, типы), внешние домены (CDN: googleapis, gstatic, cdnjs, jsdelivr, bootstrapcdn, cloudflare), соцсети (facebook, instagram, youtube, tiktok, twitter/x, vk), аналитика (GA/GTM, Meta Pixel, Yandex Metrika), email-адреса
+
+---
+
+## РАБОТА С ТЕКСТОМ
+
+### REWRITE_TEXT=false
+ЗАПРЕЩЕНО: Менять любой текстовый контент (заголовки, абзацы, кнопки, ссылки, placeholder, alt/title)
+
+### REWRITE_TEXT=true
+Разрешено переписывать текст с ограничениями:
+- Смысл сохраняется
+- Стиль остаётся "нативным"
+- Объём текста сохраняется
+- ЗАПРЕЩЕНО: Добавлять новые факты
+- ЗАПРЕЩЕНО: Менять структуру HTML (только текст внутри узлов)
+- ЗАПРЕЩЕНО: Менять технические идентификаторы
+
+---
+
+## ФОРМАТИРОВАНИЕ
+
+Разрешено: Привести код к единообразному стилю (без изменения смысла)
+
+ЗАПРЕЩЕНО: "Оптимизировать" JS, переписывать логику, менять порядок подключений файлов, добавлять комментарии "от ИИ модели"
+
+---
+
+## ВЫХОД
+
+Вернуть полный комплект файлов с теми же именами.
+
+---
+
+## ПРИОРИТЕТ ПРИ КОНФЛИКТАХ
+
+Если есть риск поломки → выбирать решение, минимизирующее риск.  
+При неоднозначности → не переименовывать JS-идентификаторы, ограничиться селекторами.
