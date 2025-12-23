@@ -1,0 +1,41 @@
+{
+  "name": "Extract Products from promtechserv HTML",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "read-binary-files",
+      "name": "Read Binary Files",
+      "type": "n8n-nodes-base.readBinaryFiles",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Загружает HTML файлы из директории"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Код из n8n_code_node.js\nconst htmlContent = $input.item.binary?.data \n  ? Buffer.from($input.item.binary.data, 'base64').toString('utf-8')\n  : $input.item.json?.html || $input.item.json?.data || '';\n\nif (!htmlContent) {\n  return [{ json: { error: 'No HTML content found' } }];\n}\n\nconst jsonLdPattern = /<script[^>]*type=[\"']application\\/ld\\+json[\"'][^>]*>(.*?)<\\/script>/gis;\nconst matches = [...htmlContent.matchAll(jsonLdPattern)];\n\nlet allProducts = [];\n\nfor (const match of matches) {\n  try {\n    const jsonData = JSON.parse(match[1].trim());\n    \n    if (jsonData && typeof jsonData === 'object' && jsonData.itemListElement) {\n      if (Array.isArray(jsonData.itemListElement)) {\n        allProducts = allProducts.concat(jsonData.itemListElement);\n      }\n    }\n    \n    if (Array.isArray(jsonData)) {\n      for (const item of jsonData) {\n        if (item && typeof item === 'object' && item.itemListElement) {\n          if (Array.isArray(item.itemListElement)) {\n            allProducts = allProducts.concat(item.itemListElement);\n          }\n        }\n      }\n    }\n  } catch (e) {\n    continue;\n  }\n}\n\nif (allProducts.length === 0) {\n  return [{ json: { error: 'No products found' } }];\n}\n\nreturn allProducts.map((productItem) => {\n  const item = productItem.item || {};\n  const offers = item.offers || {};\n  \n  return {\n    json: {\n      position: productItem.position || null,\n      name: item.name || '',\n      price: offers.price || null,\n      priceCurrency: offers.priceCurrency || 'RUB',\n      availability: offers.availability || '',\n      url: item.url || '',\n      image: Array.isArray(item.image) ? item.image : (item.image ? [item.image] : [])\n    }\n  };\n});"
+      },
+      "id": "extract-products",
+      "name": "Extract Products from JSON-LD",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "notes": "Извлекает товары из JSON-LD и разбивает на отдельные элементы"
+    },
+    {
+      "parameters": {},
+      "id": "output",
+      "name": "Output",
+      "type": "n8n-nodes-base.output",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {
+    "Read Binary Files": {
+      "main": [[{"node": "Extract Products from JSON-LD", "type": "main", "index": 0}]]
+    },
+    "Extract Products from JSON-LD": {
+      "main": [[{"node": "Output", "type": "main", "index": 0}]]
+    }
+  }
+}
