@@ -155,7 +155,9 @@ appendTotalRow(MAIN_SUM_START_ROW, lastProductRowNumber, true);
 
 // Two empty rows (gap)
 for (let i = 0; i < 2; i++) {
-  const blankRow = Array.from({ length: COLS }, () => ({ userEnteredValue: {} }));
+  const blankRow = Array.from({ length: COLS }, (_, idx) => ({
+    userEnteredValue: idx === 0 ? { stringValue: '' } : {},
+  }));
   appendRow(requests, sheetId, blankRow, false);
   currentRowIndex++;
 }
@@ -170,12 +172,15 @@ for (let c = 0; c < COLS; c++) {
   if (c === 4) text = 'ADDITIONAL TO ORDER';
   if (c === 10) text = 'COMMENTS';
 
+  const textFormat =
+    c === 1 ? { fontFamily: 'Arial', fontSize: 8 } : { bold: true };
+
   addHeaderRow.push(
     cell(
       text ? { stringValue: text } : {},
       {
         backgroundColor: BLUE,
-        textFormat: { bold: true },
+        textFormat,
         horizontalAlignment: 'CENTER',
         verticalAlignment: 'MIDDLE',
       }
@@ -203,6 +208,18 @@ requests.push({
     mergeType: 'MERGE_ALL',
   },
 });
+requests.push({
+  mergeCells: {
+    range: {
+      sheetId,
+      startRowIndex: addHeaderRowIndex,
+      endRowIndex: addHeaderRowIndex + 1,
+      startColumnIndex: 1, // B
+      endColumnIndex: 4,   // D
+    },
+    mergeType: 'MERGE_ALL',
+  },
+});
 currentRowIndex++;
 
 // Additional order instruction block (merge across 3 rows to fit text)
@@ -224,7 +241,7 @@ for (let r = 0; r < infoRowSpan; r++) {
     infoRow.push(
       cell(
         text ? { stringValue: text } : {},
-        text ? { verticalAlignment: 'MIDDLE' } : {}
+        text ? { verticalAlignment: 'TOP' } : {}
       )
     );
   }
