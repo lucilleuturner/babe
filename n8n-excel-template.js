@@ -18,13 +18,65 @@ const BORDER = {
   left: { style: 'SOLID' },
   right: { style: 'SOLID' },
 };
-const COLS = 11; // A..K
+const COLS = 21; // A..U
 
-function cell(value = {}, format = {}) {
+const COL_A = 0;
+const COL_B = 1;
+const COL_C = 2;
+const COL_D = 3;
+const COL_E = 4;
+const COL_F = 5;
+const COL_G = 6;
+const COL_H = 7;
+const COL_I = 8;
+const COL_J = 9;
+const COL_K = 10;
+const COL_L = 11;
+const COL_M = 12;
+const COL_N = 13;
+const COL_O = 14;
+const COL_P = 15;
+const COL_Q = 16;
+const COL_R = 17;
+const COL_S = 18;
+const COL_T = 19;
+const COL_U = 20;
+
+function borderForColumn(colIndex) {
+  const border = {
+    top: BORDER.top,
+    bottom: BORDER.bottom,
+    left: BORDER.left,
+    right: BORDER.right,
+  };
+
+  if (colIndex === COL_M || colIndex === COL_P || colIndex === COL_S) {
+    border.left = { style: 'SOLID_MEDIUM' };
+  }
+  if (colIndex === COL_O || colIndex === COL_R || colIndex === COL_U) {
+    border.right = { style: 'SOLID_MEDIUM' };
+  }
+
+  return border;
+}
+
+function cell(value = {}, format = {}, borders = BORDER) {
   return {
     userEnteredValue: value,
-    userEnteredFormat: { ...format, borders: BORDER },
+    userEnteredFormat: { ...format, borders },
   };
+}
+
+function makeEmptyRow() {
+  const row = [];
+  for (let c = 0; c < COLS; c++) {
+    row.push(cell({}, {}, borderForColumn(c)));
+  }
+  return row;
+}
+
+function setCell(row, colIndex, value = {}, format = {}) {
+  row[colIndex] = cell(value, format, borderForColumn(colIndex));
 }
 
 function appendRow(requests, sheetId, values, withFormat = true) {
@@ -75,13 +127,14 @@ for (const group of groups) {
   for (let c = 0; c < COLS; c++) {
     categoryRow.push(
       cell(
-        c === 0 ? { stringValue: group.name } : {},
+        c === COL_A ? { stringValue: group.name } : {},
         {
           backgroundColor: BLUE,
           textFormat: { bold: true },
           horizontalAlignment: 'CENTER',
           verticalAlignment: 'MIDDLE',
-        }
+        },
+        borderForColumn(c)
       )
     );
   }
@@ -104,19 +157,24 @@ for (const group of groups) {
 
     const qtyValue = typeof p.qty === 'number' ? { numberValue: p.qty } : {};
 
-    const row = [
-      cell({ stringValue: p.original_name_ru || '' }), // A
-      cell({}), // B
-      cell({}), // C
-      cell({}), // D
-      cell({ stringValue: p.original_name_en || '' }), // E
-      cell({}), // F
-      cell({ formulaValue: `=F${rowNumber}/$I$4` }), // G
-      cell(qtyValue, { backgroundColor: GREEN }), // H
-      cell({ formulaValue: `=F${rowNumber}*H${rowNumber}` }), // I
-      cell({ formulaValue: `=G${rowNumber}*H${rowNumber}` }), // J
-      cell({}), // K
-    ];
+    const row = makeEmptyRow();
+
+    setCell(row, COL_A, { stringValue: p.original_name_ru || '' });
+    setCell(row, COL_E, { stringValue: p.original_name_en || '' });
+    setCell(row, COL_G, { formulaValue: `=F${rowNumber}/$I$4` });
+    setCell(row, COL_H, qtyValue, { backgroundColor: GREEN });
+    setCell(row, COL_I, { formulaValue: `=F${rowNumber}*H${rowNumber}` });
+    setCell(row, COL_J, { formulaValue: `=G${rowNumber}*H${rowNumber}` });
+
+    setCell(row, COL_M, { stringValue: p.v1_name || '' });
+    setCell(row, COL_N, { stringValue: p.v1_weight || '' });
+    setCell(row, COL_O, { stringValue: p.v1_price || '' });
+    setCell(row, COL_P, { stringValue: p.v2_name || '' });
+    setCell(row, COL_Q, { stringValue: p.v2_weight || '' });
+    setCell(row, COL_R, { stringValue: p.v2_price || '' });
+    setCell(row, COL_S, { stringValue: p.v3_name || '' });
+    setCell(row, COL_T, { stringValue: p.v3_weight || '' });
+    setCell(row, COL_U, { stringValue: p.v3_price || '' });
 
     appendRow(requests, sheetId, row, true);
     currentRowIndex++;
@@ -129,19 +187,32 @@ function appendTotalRow(startRow, endRow, useRussianSum = false) {
   const totalRow = [];
 
   for (let c = 0; c < COLS; c++) {
-    if (c === 5) {
+    if (c === COL_F) {
       totalRow.push(
         cell(
           { stringValue: 'TOTAL SUM' },
-          { textFormat: { bold: true } }
+          { textFormat: { bold: true } },
+          borderForColumn(c)
         )
-      ); // F
-    } else if (c === 8) {
-      totalRow.push(cell(sumFormula ? { formulaValue: sumFormula } : {})); // I
-    } else if (c === 9) {
-      totalRow.push(cell({ stringValue: '0,00' })); // J
+      );
+    } else if (c === COL_I) {
+      totalRow.push(
+        cell(
+          sumFormula ? { formulaValue: sumFormula } : {},
+          {},
+          borderForColumn(c)
+        )
+      );
+    } else if (c === COL_J) {
+      totalRow.push(
+        cell(
+          { stringValue: '0,00' },
+          {},
+          borderForColumn(c)
+        )
+      );
     } else {
-      totalRow.push(cell({}));
+      totalRow.push(cell({}, {}, borderForColumn(c)));
     }
   }
 
@@ -167,13 +238,13 @@ const addHeaderRowIndex = currentRowIndex;
 const addHeaderRow = [];
 for (let c = 0; c < COLS; c++) {
   let text = '';
-  if (c === 0) text = 'ДОПОЛНИТЕЛЬНО К ЗАКАЗУ';
-  if (c === 1) text = 'Фасовка / Packing';
-  if (c === 4) text = 'ADDITIONAL TO ORDER';
-  if (c === 10) text = 'COMMENTS';
+  if (c === COL_A) text = 'ДОПОЛНИТЕЛЬНО К ЗАКАЗУ';
+  if (c === COL_B) text = 'Фасовка / Packing';
+  if (c === COL_E) text = 'ADDITIONAL TO ORDER';
+  if (c === COL_K) text = 'COMMENTS';
 
   const textFormat =
-    c === 1 ? { fontFamily: 'Arial', fontSize: 8 } : { bold: true };
+    c === COL_B ? { fontFamily: 'Arial', fontSize: 8 } : { bold: true };
 
   addHeaderRow.push(
     cell(
@@ -183,7 +254,8 @@ for (let c = 0; c < COLS; c++) {
         textFormat,
         horizontalAlignment: 'CENTER',
         verticalAlignment: 'MIDDLE',
-      }
+      },
+      borderForColumn(c)
     )
   );
 }
@@ -247,7 +319,8 @@ for (let r = 0; r < infoRowSpan; r++) {
               horizontalAlignment: 'CENTER',
               wrapStrategy: 'WRAP',
             }
-          : {}
+          : {},
+        borderForColumn(c)
       )
     );
   }
@@ -300,19 +373,11 @@ const addLastRowNumber = currentRowIndex + ADD_ROWS;
 for (let i = 0; i < ADD_ROWS; i++) {
   const rowNumber = addFirstRowNumber + i;
 
-  const row = [
-    cell({}), // A
-    cell({}), // B
-    cell({}), // C
-    cell({}), // D
-    cell({}), // E
-    cell({}), // F
-    cell({ formulaValue: `=F${rowNumber}/$I$4` }), // G
-    cell({}, { backgroundColor: GREEN }), // H
-    cell({ formulaValue: `=F${rowNumber}*H${rowNumber}` }), // I
-    cell({ formulaValue: `=G${rowNumber}*H${rowNumber}` }), // J
-    cell({}), // K
-  ];
+  const row = makeEmptyRow();
+  setCell(row, COL_G, { formulaValue: `=F${rowNumber}/$I$4` });
+  setCell(row, COL_H, {}, { backgroundColor: GREEN });
+  setCell(row, COL_I, { formulaValue: `=F${rowNumber}*H${rowNumber}` });
+  setCell(row, COL_J, { formulaValue: `=G${rowNumber}*H${rowNumber}` });
 
   appendRow(requests, sheetId, row, true);
   currentRowIndex++;
