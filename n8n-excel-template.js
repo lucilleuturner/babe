@@ -293,13 +293,12 @@ requests.push({
 });
 
 // Additional table input rows
-let addFirstRowNumber = null;
-let addLastRowNumber = null;
+const ADD_ROWS = 10;
+const addFirstRowNumber = currentRowIndex + 1;
+const addLastRowNumber = currentRowIndex + ADD_ROWS;
 
-for (let i = 0; i < 10; i++) {
-  const rowNumber = currentRowIndex + 1;
-  if (!addFirstRowNumber) addFirstRowNumber = rowNumber;
-  addLastRowNumber = rowNumber;
+for (let i = 0; i < ADD_ROWS; i++) {
+  const rowNumber = addFirstRowNumber + i;
 
   const row = [
     cell({}), // A
