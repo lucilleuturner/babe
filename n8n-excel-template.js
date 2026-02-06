@@ -241,7 +241,9 @@ for (let r = 0; r < infoRowSpan; r++) {
     infoRow.push(
       cell(
         text ? { stringValue: text } : {},
-        text ? { verticalAlignment: 'TOP' } : {}
+        text
+          ? { verticalAlignment: 'MIDDLE', horizontalAlignment: 'CENTER' }
+          : {}
       )
     );
   }
@@ -269,6 +271,18 @@ requests.push({
       endRowIndex: infoRowIndex + infoRowSpan,
       startColumnIndex: 4, // E
       endColumnIndex: 7,   // G
+    },
+    mergeType: 'MERGE_ALL',
+  },
+});
+requests.push({
+  mergeCells: {
+    range: {
+      sheetId,
+      startRowIndex: infoRowIndex,
+      endRowIndex: infoRowIndex + infoRowSpan,
+      startColumnIndex: 7, // H
+      endColumnIndex: 11,  // K
     },
     mergeType: 'MERGE_ALL',
   },
