@@ -181,7 +181,7 @@ for (const group of groups) {
   }
 }
 
-function appendTotalRow(startRow, endRow, useRussianSum = false) {
+function buildTotalRow(startRow, endRow, useRussianSum = false) {
   const sumFn = useRussianSum ? 'СУММ' : 'SUM';
   const sumFormula = startRow && endRow ? `=${sumFn}(I${startRow}:I${endRow})` : '';
   const totalRow = [];
@@ -216,8 +216,29 @@ function appendTotalRow(startRow, endRow, useRussianSum = false) {
     }
   }
 
+  return totalRow;
+}
+
+function appendTotalRow(startRow, endRow, useRussianSum = false) {
+  const totalRow = buildTotalRow(startRow, endRow, useRussianSum);
   appendRow(requests, sheetId, totalRow, true);
   currentRowIndex++;
+}
+
+function writeRowsAt(startRowIndex, rows) {
+  requests.push({
+    updateCells: {
+      range: {
+        sheetId,
+        startRowIndex,
+        endRowIndex: startRowIndex + rows.length,
+        startColumnIndex: 0,
+        endColumnIndex: COLS,
+      },
+      rows,
+      fields: 'userEnteredValue,userEnteredFormat',
+    },
+  });
 }
 
 // Total for main table
@@ -367,8 +388,10 @@ requests.push({
 
 // Additional table input rows
 const ADD_ROWS = 10;
-const addFirstRowNumber = currentRowIndex + 1;
-const addLastRowNumber = currentRowIndex + ADD_ROWS;
+const addStartRowIndex = currentRowIndex;
+const addFirstRowNumber = addStartRowIndex + 1;
+const addLastRowNumber = addStartRowIndex + ADD_ROWS;
+const addRows = [];
 
 for (let i = 0; i < ADD_ROWS; i++) {
   const rowNumber = addFirstRowNumber + i;
@@ -379,11 +402,15 @@ for (let i = 0; i < ADD_ROWS; i++) {
   setCell(row, COL_I, { formulaValue: `=F${rowNumber}*H${rowNumber}` });
   setCell(row, COL_J, { formulaValue: `=G${rowNumber}*H${rowNumber}` });
 
-  appendRow(requests, sheetId, row, true);
-  currentRowIndex++;
+  addRows.push({ values: row });
 }
 
+writeRowsAt(addStartRowIndex, addRows);
+currentRowIndex += ADD_ROWS;
+
 // Total for additional table
-appendTotalRow(addFirstRowNumber, addLastRowNumber, true);
+const addTotalRow = buildTotalRow(addFirstRowNumber, addLastRowNumber, true);
+writeRowsAt(currentRowIndex, [{ values: addTotalRow }]);
+currentRowIndex++;
 
 return [{ json: { requests } }];
