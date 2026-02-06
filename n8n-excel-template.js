@@ -242,7 +242,11 @@ for (let r = 0; r < infoRowSpan; r++) {
       cell(
         text ? { stringValue: text } : {},
         text
-          ? { verticalAlignment: 'MIDDLE', horizontalAlignment: 'CENTER' }
+          ? {
+              verticalAlignment: 'MIDDLE',
+              horizontalAlignment: 'CENTER',
+              wrapStrategy: 'WRAP',
+            }
           : {}
       )
     );
