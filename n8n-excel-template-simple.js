@@ -54,9 +54,40 @@ function appendRow(requests, sheetId, values, withFormat = true) {
 
 function appendBlankRow(requests, sheetId) {
   const values = Array.from({ length: COLS }, (_, idx) => ({
-    userEnteredValue: idx === 0 ? { stringValue: '' } : {},
+    userEnteredValue: idx === 0 ? { formulaValue: '=""' } : {},
   }));
   appendRow(requests, sheetId, values, false);
+}
+
+function writeRowsAt(requests, sheetId, startRowIndex, rows, fields = 'userEnteredValue,userEnteredFormat') {
+  requests.push({
+    updateCells: {
+      range: {
+        sheetId,
+        startRowIndex,
+        endRowIndex: startRowIndex + rows.length,
+        startColumnIndex: 0,
+        endColumnIndex: COLS,
+      },
+      rows,
+      fields,
+    },
+  });
+}
+
+function buildTotalRow(startRow, endRow) {
+  const sumFormula = (startRow && endRow) ? `=СУММ(F${startRow}:F${endRow})` : '';
+  const row = [];
+  for (let c = 0; c < COLS; c++) {
+    if (c === 4) { // E
+      row.push(cell({ stringValue: 'ИТОГО' }, { textFormat: { bold: true } }));
+    } else if (c === 5) { // F
+      row.push(cell(sumFormula ? { formulaValue: sumFormula } : {}));
+    } else {
+      row.push(cell({}));
+    }
+  }
+  return row;
 }
 
 // Группируем по категориям
@@ -74,17 +105,7 @@ let firstProductRow = null;
 let lastProductRow = null;
 
 function appendTotalRow(startRow, endRow) {
-  const sumFormula = (startRow && endRow) ? `=СУММ(F${startRow}:F${endRow})` : '';
-  const row = [];
-  for (let c = 0; c < COLS; c++) {
-    if (c === 4) { // E
-      row.push(cell({ stringValue: 'ИТОГО' }, { textFormat: { bold: true } }));
-    } else if (c === 5) { // F
-      row.push(cell(sumFormula ? { formulaValue: sumFormula } : {}));
-    } else {
-      row.push(cell({}));
-    }
-  }
+  const row = buildTotalRow(startRow, endRow);
   appendRow(requests, sheetId, row, true);
   currentRowIndex++;
 }
@@ -196,10 +217,15 @@ requests.push({
 });
 currentRowIndex++;
 
-// 10 строк с границами
-const addFirstRow = currentRowIndex + 1;
-for (let i = 0; i < 10; i++) {
-  const rowNumber = currentRowIndex + 1;
+// 10 строк с границами (пишем в фиксированные строки под шапкой)
+const ADD_ROWS = 10;
+const addStartRowIndex = currentRowIndex;
+const addFirstRow = addStartRowIndex + 1;
+const addLastRow = addStartRowIndex + ADD_ROWS;
+const addRows = [];
+
+for (let i = 0; i < ADD_ROWS; i++) {
+  const rowNumber = addFirstRow + i;
   const row = [
     cell({}), // A
     cell({}), // B
@@ -209,12 +235,15 @@ for (let i = 0; i < 10; i++) {
     cell({ formulaValue: `=D${rowNumber}*E${rowNumber}` }), // F
     cell({}), // G
   ];
-  appendRow(requests, sheetId, row, true);
-  currentRowIndex++;
+  addRows.push({ values: row });
 }
-const addLastRow = currentRowIndex;
 
-// ИТОГО дополнительной таблицы
-appendTotalRow(addFirstRow, addLastRow);
+writeRowsAt(requests, sheetId, addStartRowIndex, addRows);
+currentRowIndex += ADD_ROWS;
+
+// ИТОГО дополнительной таблицы (строго после 10 строк)
+const addTotalRow = buildTotalRow(addFirstRow, addLastRow);
+writeRowsAt(requests, sheetId, currentRowIndex, [{ values: addTotalRow }]);
+currentRowIndex++;
 
 return [{ json: { requests } }];
