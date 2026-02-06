@@ -67,9 +67,9 @@ function cell(value = {}, format = {}, borders = BORDER) {
   };
 }
 
-function makeEmptyRow() {
+function makeEmptyRow(colCount = COLS) {
   const row = [];
-  for (let c = 0; c < COLS; c++) {
+  for (let c = 0; c < colCount; c++) {
     row.push(cell({}, {}, borderForColumn(c)));
   }
   return row;
@@ -181,12 +181,12 @@ for (const group of groups) {
   }
 }
 
-function buildTotalRow(startRow, endRow, useRussianSum = false) {
+function buildTotalRow(startRow, endRow, useRussianSum = false, colCount = COLS) {
   const sumFn = useRussianSum ? 'СУММ' : 'SUM';
   const sumFormula = startRow && endRow ? `=${sumFn}(I${startRow}:I${endRow})` : '';
   const totalRow = [];
 
-  for (let c = 0; c < COLS; c++) {
+  for (let c = 0; c < colCount; c++) {
     if (c === COL_F) {
       totalRow.push(
         cell(
@@ -219,13 +219,13 @@ function buildTotalRow(startRow, endRow, useRussianSum = false) {
   return totalRow;
 }
 
-function appendTotalRow(startRow, endRow, useRussianSum = false) {
-  const totalRow = buildTotalRow(startRow, endRow, useRussianSum);
+function appendTotalRow(startRow, endRow, useRussianSum = false, colCount = COLS) {
+  const totalRow = buildTotalRow(startRow, endRow, useRussianSum, colCount);
   appendRow(requests, sheetId, totalRow, true);
   currentRowIndex++;
 }
 
-function writeRowsAt(startRowIndex, rows) {
+function writeRowsAt(startRowIndex, rows, colCount = COLS) {
   requests.push({
     updateCells: {
       range: {
@@ -233,7 +233,7 @@ function writeRowsAt(startRowIndex, rows) {
         startRowIndex,
         endRowIndex: startRowIndex + rows.length,
         startColumnIndex: 0,
-        endColumnIndex: COLS,
+        endColumnIndex: colCount,
       },
       rows,
       fields: 'userEnteredValue,userEnteredFormat',
@@ -255,9 +255,10 @@ for (let i = 0; i < 2; i++) {
 }
 
 // Additional order header row (blue)
+const ADD_COLS = 11; // A..K
 const addHeaderRowIndex = currentRowIndex;
 const addHeaderRow = [];
-for (let c = 0; c < COLS; c++) {
+for (let c = 0; c < ADD_COLS; c++) {
   let text = '';
   if (c === COL_A) text = 'ДОПОЛНИТЕЛЬНО К ЗАКАЗУ';
   if (c === COL_B) text = 'Фасовка / Packing';
@@ -321,7 +322,7 @@ const infoRowSpan = 3; // current row + 2 below
 
 for (let r = 0; r < infoRowSpan; r++) {
   const infoRow = [];
-  for (let c = 0; c < COLS; c++) {
+  for (let c = 0; c < ADD_COLS; c++) {
     let text = '';
     if (r === 0 && c === 0) {
       text =
@@ -396,7 +397,7 @@ const addRows = [];
 for (let i = 0; i < ADD_ROWS; i++) {
   const rowNumber = addFirstRowNumber + i;
 
-  const row = makeEmptyRow();
+  const row = makeEmptyRow(ADD_COLS);
   setCell(row, COL_G, { formulaValue: `=F${rowNumber}/$I$4` });
   setCell(row, COL_H, {}, { backgroundColor: GREEN });
   setCell(row, COL_I, { formulaValue: `=F${rowNumber}*H${rowNumber}` });
@@ -405,12 +406,12 @@ for (let i = 0; i < ADD_ROWS; i++) {
   addRows.push({ values: row });
 }
 
-writeRowsAt(addStartRowIndex, addRows);
+writeRowsAt(addStartRowIndex, addRows, ADD_COLS);
 currentRowIndex += ADD_ROWS;
 
 // Total for additional table
-const addTotalRow = buildTotalRow(addFirstRowNumber, addLastRowNumber, true);
-writeRowsAt(currentRowIndex, [{ values: addTotalRow }]);
+const addTotalRow = buildTotalRow(addFirstRowNumber, addLastRowNumber, true, ADD_COLS);
+writeRowsAt(currentRowIndex, [{ values: addTotalRow }], ADD_COLS);
 currentRowIndex++;
 
 return [{ json: { requests } }];
