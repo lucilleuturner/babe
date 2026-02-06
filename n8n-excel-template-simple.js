@@ -52,13 +52,6 @@ function appendRow(requests, sheetId, values, withFormat = true) {
   });
 }
 
-function appendBlankRow(requests, sheetId) {
-  const values = Array.from({ length: COLS }, (_, idx) => ({
-    userEnteredValue: idx === 0 ? { formulaValue: '=""' } : {},
-  }));
-  appendRow(requests, sheetId, values, false);
-}
-
 function writeRowsAt(requests, sheetId, startRowIndex, rows, fields = 'userEnteredValue,userEnteredFormat') {
   requests.push({
     updateCells: {
@@ -168,9 +161,18 @@ for (const category of Object.keys(grouped)) {
 // ИТОГО основной таблицы
 appendTotalRow(firstProductRow, lastProductRow);
 
-// Два пустых ряда между таблицами
-appendBlankRow(requests, sheetId);
-appendBlankRow(requests, sheetId);
+// Два пустых ряда между таблицами (вставляем строки)
+requests.push({
+  insertDimension: {
+    range: {
+      sheetId,
+      dimension: 'ROWS',
+      startIndex: currentRowIndex,
+      endIndex: currentRowIndex + 2,
+    },
+    inheritFromBefore: true,
+  },
+});
 currentRowIndex += 2;
 
 // Дополнительная таблица
@@ -193,14 +195,15 @@ const addHeaderRow = [
   ),
 ];
 
-appendRow(requests, sheetId, addHeaderRow, true);
+const addHeaderRowIndex = currentRowIndex;
+writeRowsAt(requests, sheetId, addHeaderRowIndex, [{ values: addHeaderRow }]);
 
 requests.push({
   mergeCells: {
     range: {
       sheetId,
-      startRowIndex: currentRowIndex,
-      endRowIndex: currentRowIndex + 1,
+      startRowIndex: addHeaderRowIndex,
+      endRowIndex: addHeaderRowIndex + 1,
       startColumnIndex: 1, // B
       endColumnIndex: 3,   // C
     },
@@ -210,7 +213,7 @@ requests.push({
 
 requests.push({
   updateDimensionProperties: {
-    range: { sheetId, dimension: 'ROWS', startIndex: currentRowIndex, endIndex: currentRowIndex + 1 },
+    range: { sheetId, dimension: 'ROWS', startIndex: addHeaderRowIndex, endIndex: addHeaderRowIndex + 1 },
     properties: { pixelSize: 30 },
     fields: 'pixelSize',
   },
