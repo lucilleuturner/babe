@@ -38,7 +38,8 @@ function appendRow(requests, sheetId, values, withFormat = true) {
 }
 
 const requests = [];
-let currentRowIndex = 5; // 0-based row index for the next appended row
+// Таблица начинается с 8 строки (первые 7 строк — шапка)
+let currentRowIndex = 7; // 0-based row index for the next appended row
 
 // Group items by category while keeping order from input
 const groups = [];
@@ -122,13 +123,19 @@ for (const group of groups) {
   }
 }
 
-function appendTotalRow(startRow, endRow) {
-  const sumFormula = startRow && endRow ? `=SUM(I${startRow}:I${endRow})` : '';
+function appendTotalRow(startRow, endRow, useRussianSum = false) {
+  const sumFn = useRussianSum ? 'СУММ' : 'SUM';
+  const sumFormula = startRow && endRow ? `=${sumFn}(I${startRow}:I${endRow})` : '';
   const totalRow = [];
 
   for (let c = 0; c < COLS; c++) {
     if (c === 5) {
-      totalRow.push(cell({ stringValue: 'Total Sum' })); // F
+      totalRow.push(
+        cell(
+          { stringValue: 'TOTAL SUM' },
+          { textFormat: { bold: true } }
+        )
+      ); // F
     } else if (c === 8) {
       totalRow.push(cell(sumFormula ? { formulaValue: sumFormula } : {})); // I
     } else if (c === 9) {
@@ -143,7 +150,8 @@ function appendTotalRow(startRow, endRow) {
 }
 
 // Total for main table
-appendTotalRow(firstProductRowNumber, lastProductRowNumber);
+const MAIN_SUM_START_ROW = 9; // сумма с 9 строки до последнего товара
+appendTotalRow(MAIN_SUM_START_ROW, lastProductRowNumber, true);
 
 // Two empty rows (gap)
 for (let i = 0; i < 2; i++) {
@@ -159,7 +167,7 @@ for (let c = 0; c < COLS; c++) {
   let text = '';
   if (c === 0) text = 'ДОПОЛНИТЕЛЬНО К ЗАКАЗУ';
   if (c === 1) text = 'Фасовка / Packing';
-  if (c === 2) text = 'ADDITIONAL TO ORDER';
+  if (c === 4) text = 'ADDITIONAL TO ORDER';
   if (c === 10) text = 'COMMENTS';
 
   addHeaderRow.push(
@@ -197,29 +205,39 @@ requests.push({
 });
 currentRowIndex++;
 
-// Additional order instruction row
+// Additional order instruction block (merge across 3 rows to fit text)
 const infoRowIndex = currentRowIndex;
-const infoRow = [];
-for (let c = 0; c < COLS; c++) {
-  let text = '';
-  if (c === 0) {
-    text =
-      'Вы можете указать все необходмые товары в данные поля, которых нет в основном прйс-листе';
+const infoRowSpan = 3; // current row + 2 below
+
+for (let r = 0; r < infoRowSpan; r++) {
+  const infoRow = [];
+  for (let c = 0; c < COLS; c++) {
+    let text = '';
+    if (r === 0 && c === 0) {
+      text =
+        'Вы можете указать все необходимые товары в данные поля, которых нет в основном прайс-листе';
+    }
+    if (r === 0 && c === 4) {
+      text =
+        'You can specify all necessary goods in these fields, which are not in the main price list';
+    }
+    infoRow.push(
+      cell(
+        text ? { stringValue: text } : {},
+        text ? { verticalAlignment: 'MIDDLE' } : {}
+      )
+    );
   }
-  if (c === 4) {
-    text =
-      'You can specify all necessary goods in these fields, which are not in the main price list';
-  }
-  infoRow.push(cell(text ? { stringValue: text } : {}));
+  appendRow(requests, sheetId, infoRow, true);
+  currentRowIndex++;
 }
 
-appendRow(requests, sheetId, infoRow, true);
 requests.push({
   mergeCells: {
     range: {
       sheetId,
       startRowIndex: infoRowIndex,
-      endRowIndex: infoRowIndex + 1,
+      endRowIndex: infoRowIndex + infoRowSpan,
       startColumnIndex: 0, // A
       endColumnIndex: 4,   // D
     },
@@ -231,14 +249,13 @@ requests.push({
     range: {
       sheetId,
       startRowIndex: infoRowIndex,
-      endRowIndex: infoRowIndex + 1,
+      endRowIndex: infoRowIndex + infoRowSpan,
       startColumnIndex: 4, // E
       endColumnIndex: 7,   // G
     },
     mergeType: 'MERGE_ALL',
   },
 });
-currentRowIndex++;
 
 // Additional table input rows
 let addFirstRowNumber = null;
@@ -268,6 +285,6 @@ for (let i = 0; i < 10; i++) {
 }
 
 // Total for additional table
-appendTotalRow(addFirstRowNumber, addLastRowNumber);
+appendTotalRow(addFirstRowNumber, addLastRowNumber, true);
 
 return [{ json: { requests } }];
