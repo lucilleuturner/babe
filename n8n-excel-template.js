@@ -18,7 +18,7 @@ const BORDER = {
   left: { style: 'SOLID' },
   right: { style: 'SOLID' },
 };
-const COLS = 21; // A..U
+const COLS = 24; // A..X
 
 const COL_A = 0;
 const COL_B = 1;
@@ -41,6 +41,9 @@ const COL_R = 17;
 const COL_S = 18;
 const COL_T = 19;
 const COL_U = 20;
+const COL_V = 21;
+const COL_W = 22;
+const COL_X = 23;
 
 function borderForColumn(colIndex) {
   const border = {
@@ -50,10 +53,10 @@ function borderForColumn(colIndex) {
     right: BORDER.right,
   };
 
-  if (colIndex === COL_M || colIndex === COL_P || colIndex === COL_S) {
+  if (colIndex === COL_M || colIndex === COL_Q || colIndex === COL_U) {
     border.left = { style: 'SOLID_MEDIUM' };
   }
-  if (colIndex === COL_O || colIndex === COL_R || colIndex === COL_U) {
+  if (colIndex === COL_P || colIndex === COL_T || colIndex === COL_X) {
     border.right = { style: 'SOLID_MEDIUM' };
   }
 
@@ -167,14 +170,17 @@ for (const group of groups) {
     setCell(row, COL_J, { formulaValue: `=G${rowNumber}*H${rowNumber}` });
 
     setCell(row, COL_M, { stringValue: p.v1_name || '' });
-    setCell(row, COL_N, { stringValue: p.v1_weight || '' });
-    setCell(row, COL_O, { stringValue: p.v1_price || '' });
-    setCell(row, COL_P, { stringValue: p.v2_name || '' });
-    setCell(row, COL_Q, { stringValue: p.v2_weight || '' });
-    setCell(row, COL_R, { stringValue: p.v2_price || '' });
-    setCell(row, COL_S, { stringValue: p.v3_name || '' });
-    setCell(row, COL_T, { stringValue: p.v3_weight || '' });
-    setCell(row, COL_U, { stringValue: p.v3_price || '' });
+    setCell(row, COL_N, { stringValue: p.v1_supplier || '' });
+    setCell(row, COL_O, { stringValue: p.v1_weight || '' });
+    setCell(row, COL_P, { stringValue: p.v1_price || '' });
+    setCell(row, COL_Q, { stringValue: p.v2_name || '' });
+    setCell(row, COL_R, { stringValue: p.v2_supplier || '' });
+    setCell(row, COL_S, { stringValue: p.v2_weight || '' });
+    setCell(row, COL_T, { stringValue: p.v2_price || '' });
+    setCell(row, COL_U, { stringValue: p.v3_name || '' });
+    setCell(row, COL_V, { stringValue: p.v3_supplier || '' });
+    setCell(row, COL_W, { stringValue: p.v3_weight || '' });
+    setCell(row, COL_X, { stringValue: p.v3_price || '' });
 
     appendRow(requests, sheetId, row, true);
     currentRowIndex++;
